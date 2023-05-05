@@ -17,16 +17,6 @@ from tqdm import tqdm
 import errant
 
 
-def agreement(x, y1, y2):
-    '''
-    edits1 = edits from x to y1
-    edits2 = edits from x to y2
-    return number of exact matching edits
-    '''
-    edits1 = return_edits(x, y1)
-    edits2 = return_edits(x, y2)
-    return edit_agreement(edits1, edits2)
-
 
 def return_edits(input, prediction):
     '''
