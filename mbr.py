@@ -84,7 +84,7 @@ if __name__ == "__main__":
     
     # select samples
     selected_sample = []
-    for n, samples in tqdm(enumerate(zip(*data))):
+    for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
         best = [None, 0] # [model index, score] 
         for i in range(len(samples)):
             total = 0
