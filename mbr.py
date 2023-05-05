@@ -88,8 +88,12 @@ if __name__ == "__main__":
         best = [None, 0] # [model index, score] 
         for i in range(len(samples)):
             total = 0
+            edits_i = return_edits(incs[n], samples[i])
             for j in range(len(samples)):
-                score = agreement(incs[n], samples[j], samples[i])
+                if i == j:
+                    continue
+                edits_j = return_edits(incs[n], samples[j])
+                score = edit_agreement(edits_j, edits_i)
                 total += score
             if total > best[1]:
                 best = [i, total]
