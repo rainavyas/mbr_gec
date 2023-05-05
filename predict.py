@@ -1,3 +1,7 @@
+'''
+Generate output predictions file with ids
+'''
+
 import argparse
 import sys
 import os
