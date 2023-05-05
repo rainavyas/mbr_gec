@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # load predicted data
     data = []
-    for fpath in args.pred_file:
+    for fpath in args.pred_files:
         with open(fpath, 'r') as f:
             seqs = f.readlines()
         seqs = [s.strip('\n') for s in seqs]
