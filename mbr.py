@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # select samples
     selected_sample = []
     for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
-        best = [None, 0] # [model index, score] 
+        best = [None, -1] # [model index, score] 
         for i in range(len(samples)):
             total = 0
             edits_i = return_edits(incs[n], samples[i])
