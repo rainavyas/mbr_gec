@@ -75,15 +75,14 @@ if __name__ == "__main__":
     # select samples
     selected_sample = []
     for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
+        edits = [return_edits(incs[n], s) for s in samples]
         best = [None, -1] # [model index, score] 
-        for i in range(len(samples)):
+        for i in range(len(edits)):
             total = 0
-            edits_i = return_edits(incs[n], samples[i])
-            for j in range(len(samples)):
+            for j in range(len(edits)):
                 if i == j:
                     continue
-                edits_j = return_edits(incs[n], samples[j])
-                score = edit_agreement(edits_j, edits_i)
+                score = edit_agreement(edits[j], edits[i])
                 total += score
             if total > best[1]:
                 best = [i, total]
