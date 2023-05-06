@@ -44,6 +44,14 @@ def edit_agreement(edits1, edits2):
             matched += 1
     return matched
 
+def edit_jaccard_similarity(edits1, edits2):
+    list1 = [e.o_str+' -> '+e.c_str for e in edits1]
+    list2 = [e.o_str+' -> '+e.c_str for e in edits2]
+
+    intersection = len(list(set(list1).intersection(list2)))
+    union = (len(list1) + len(list2)) - intersection
+    return float(intersection) / union
+
 if __name__ == "__main__":
 
     # Get command line arguments
@@ -51,6 +59,7 @@ if __name__ == "__main__":
     commandLineParser.add_argument('--pred_files', type=str, nargs='+', required=False, help='path to data outputs with predicted sequences')
     commandLineParser.add_argument('--input', type=str, required=True, help='path to input file with source incorrect sequences')
     commandLineParser.add_argument('--outfile', type=str, required=True, help='path to save final predictions')
+    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard'], help='reward metric to use')
     args = commandLineParser.parse_args()
 
     # Save the command run
@@ -72,6 +81,9 @@ if __name__ == "__main__":
     with open(args.input, 'r') as f:
         incs = f.readlines()
     
+    # reward metric
+    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard_similarity}
+    
     # select samples
     selected_sample = []
     for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
@@ -82,7 +94,7 @@ if __name__ == "__main__":
             for j in range(len(edits)):
                 if i == j:
                     continue
-                score = edit_agreement(edits[j], edits[i])
+                score = scorer[args.reward](edits[j], edits[i])
                 total += score
             if total > best[1]:
                 best = [i, total]
