@@ -48,8 +48,12 @@ def edit_jaccard_similarity(edits1, edits2):
     list1 = [e.o_str+' -> '+e.c_str for e in edits1]
     list2 = [e.o_str+' -> '+e.c_str for e in edits2]
 
+    if len(list1) == 0 and len(list2) == 0:
+        return 1
+
     intersection = len(list(set(list1).intersection(list2)))
     union = (len(list1) + len(list2)) - intersection
+
     return float(intersection) / union
 
 if __name__ == "__main__":
