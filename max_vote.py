@@ -6,6 +6,7 @@ Code sourced from: https://github.com/MaksTarnavskyi/gector-large/blob/master/en
 
 import argparse
 import os
+import sys
 import spacy
 from difflib import SequenceMatcher
 from collections import Counter
@@ -143,4 +144,10 @@ if __name__ == '__main__':
                         help='Minimal count of same correction by models',
                         default=2)
     args = parser.parse_args()
+
+    # Save the command run
+    if not os.path.isdir('CMDs'):
+        os.mkdir('CMDs')
+    with open('CMDs/max_vote.cmd', 'a') as f:
+        f.write(' '.join(sys.argv)+'\n')
     main(args)
