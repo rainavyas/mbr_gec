@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # create predictions
     preds = []
     instruction = "Grammatically correct the following?"
-    for idd, text in tqdm(zip(ids, texts)):
+    for idd, text in tqdm(zip(ids, texts), total=len(ids)):
         prompt = generate_prompt(instruction, text)
 
         input_ids = tokenizer(prompt, return_tensors="pt").input_ids
