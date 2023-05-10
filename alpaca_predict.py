@@ -9,6 +9,27 @@ import os
 from transformers import GenerationConfig, LlamaTokenizer, LlamaForCausalLM
 import torch
 
+def generate_prompt(instruction: str, input_ctxt: str = None) -> str:
+    if input_ctxt:
+        return f"""Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+
+        ### Instruction:
+        {instruction}
+
+        ### Input:
+        {input_ctxt}
+
+        ### Response:"""
+    
+    else:
+        return f"""Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+        ### Instruction:
+        {instruction}
+
+        ### Response:"""
+
+
 if __name__ == '__main__':
     # read parameters
     parser = argparse.ArgumentParser()
@@ -47,8 +68,8 @@ if __name__ == '__main__':
 
     instruction = "Grammatically correct the following?"
     input_ctxt = 'I is run in park.'
-
-    prompt = instruction + ' ' + input_ctxt
+    prompt = generate_prompt(instruction, input_ctxt)
+    
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
     input_ids = input_ids.to(model.device)
 
