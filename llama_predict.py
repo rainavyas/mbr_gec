@@ -6,7 +6,7 @@ import argparse
 import sys
 import os
 
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import LlamaTokenizer, AutoModelForCausalLM
 
 
 if __name__ == '__main__':
@@ -31,7 +31,7 @@ if __name__ == '__main__':
         f.write(' '.join(sys.argv)+'\n')
     
     model_name = f"decapoda-research/llama-{args.model_size}-hf"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = LlamaTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
 
     # test
