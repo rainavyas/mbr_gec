@@ -48,6 +48,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_file',
                         help='Path to the output file',
                         required=True)
+    parser.add_argument('--force_cpu', action='store_true', help='force cpu use')
     args = parser.parse_args()
 
     # Save the command run
