@@ -6,8 +6,8 @@ import argparse
 import sys
 import os
 
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
+from transformers import GenerationConfig, LlamaTokenizer, LlamaForCausalLM
+import torch
 
 if __name__ == '__main__':
     # read parameters
@@ -26,16 +26,40 @@ if __name__ == '__main__':
     with open('CMDs/alpaca_predict.cmd', 'a') as f:
         f.write(' '.join(sys.argv)+'\n')
     
-    model_name = f"chavinlo/alpaca-13b"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    tokenizer = LlamaTokenizer.from_pretrained("chainyo/alpaca-lora-7b")
+    model = LlamaForCausalLM.from_pretrained(
+        "chainyo/alpaca-lora-7b",
+        load_in_8bit=True,
+        torch_dtype=torch.float16,
+        device_map="auto",
+    )
+    generation_config = GenerationConfig(
+        temperature=0.2,
+        top_p=0.75,
+        top_k=40,
+        num_beams=4,
+        max_new_tokens=128,
+    )
 
-    # test
+    model.eval()
+    if torch.__version__ >= "2":
+        model = torch.compile(model)
 
-    text = 'Grammatically correct the following sentence. He is run to park.'
+    instruction = "Grammatically correct the following?"
+    input_ctxt = 'I is run in park.'
 
-    inputs = tokenizer(text, return_tensors="pt").input_ids
-    outputs = model.generate(inputs, max_new_tokens=100, do_sample=True, top_k=50, top_p=0.95)
-    out = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-    import pdb; pdb.set_trace()
+    prompt = instruction + ' ' + input_ctxt
+    input_ids = tokenizer(prompt, return_tensors="pt").input_ids
+    input_ids = input_ids.to(model.device)
+
+    with torch.no_grad():
+        outputs = model.generate(
+            input_ids=input_ids,
+            generation_config=generation_config,
+            return_dict_in_generate=True,
+            output_scores=True,
+        )
+
+    response = tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
+    print(response)
 
