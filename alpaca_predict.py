@@ -31,7 +31,7 @@ if __name__ == '__main__':
         "chainyo/alpaca-lora-7b",
         load_in_8bit=True,
         torch_dtype=torch.float16,
-        device_map="auto",
+        # device_map="auto",
     )
     generation_config = GenerationConfig(
         temperature=0.2,
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     prompt = instruction + ' ' + input_ctxt
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
-    input_ids = input_ids.to(model.device)
+    # input_ids = input_ids.to(model.device)
 
     with torch.no_grad():
         outputs = model.generate(
