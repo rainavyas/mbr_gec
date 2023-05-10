@@ -5,6 +5,7 @@ Generate output predictions file with ids using the alpaca model
 import argparse
 import sys
 import os
+from tqdm import tqdm
 
 from transformers import GenerationConfig, LlamaTokenizer, LlamaForCausalLM
 import torch
@@ -72,7 +73,7 @@ if __name__ == '__main__':
     # create predictions
     preds = []
     instruction = "Grammatically correct the following?"
-    for idd, text in zip(ids, texts):
+    for idd, text in tqdm(zip(ids, texts)):
         prompt = generate_prompt(instruction, text)
 
         input_ids = tokenizer(prompt, return_tensors="pt").input_ids
@@ -87,10 +88,8 @@ if __name__ == '__main__':
             )
 
         response = tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
-        loc = response.find('Response')
+        loc = response.find('Response:')
         pred = response[loc+18:]
-        import pdb; pdb.set_trace()
-
         preds.append(idd + ' '+ pred)
     
     # Save to output file
