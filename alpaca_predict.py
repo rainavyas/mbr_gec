@@ -10,6 +10,14 @@ from tqdm import tqdm
 from transformers import GenerationConfig, LlamaTokenizer, LlamaForCausalLM
 import torch
 
+def get_default_device():
+    if torch.cuda.is_available():
+        print("Got CUDA!")
+        return torch.device('cuda')
+    else:
+        print("No CUDA found")
+        return torch.device('cpu')
+
 def generate_prompt(instruction: str, input_ctxt: str = None) -> str:
     if input_ctxt:
         return f"""Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
@@ -66,6 +74,13 @@ if __name__ == '__main__':
         max_new_tokens=128,
     )
 
+    # Get the device
+    if args.force_cpu:
+        device = torch.device('cpu')
+    else:
+        device = get_default_device()
+
+    model.to(device)
     model.eval()
     if torch.__version__ >= "2":
         model = torch.compile(model)
