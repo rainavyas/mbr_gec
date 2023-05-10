@@ -69,7 +69,7 @@ if __name__ == '__main__':
     instruction = "Grammatically correct the following?"
     input_ctxt = 'I is run in park.'
     prompt = generate_prompt(instruction, input_ctxt)
-    
+
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
     input_ids = input_ids.to(model.device)
 
@@ -82,5 +82,6 @@ if __name__ == '__main__':
         )
 
     response = tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
+    import pdb; pdb.set_trace()
     print(response)
 
