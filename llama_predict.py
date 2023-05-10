@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_size',
                         choices=['7b', '13b'],
-                        help='llama model size.', type='str',
+                        help='llama model size.',
                         default='7b')
     parser.add_argument('--input_file',
                         help='Path to the evalset file',
