@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     # test
 
-    text = 'Grammatically correct this. He is run to park.'
+    text = 'Give only the grammatically correct output for the following setence: He is run to park.'
 
     inputs = tokenizer(text, return_tensors="pt").input_ids
     outputs = model.generate(inputs, max_new_tokens=100, do_sample=True, top_k=50, top_p=0.95)
