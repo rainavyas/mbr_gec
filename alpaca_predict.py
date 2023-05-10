@@ -29,9 +29,9 @@ if __name__ == '__main__':
     tokenizer = LlamaTokenizer.from_pretrained("chainyo/alpaca-lora-7b")
     model = LlamaForCausalLM.from_pretrained(
         "chainyo/alpaca-lora-7b",
-        load_in_8bit=True,
-        torch_dtype=torch.float16,
-        device_map="auto",
+        # load_in_8bit=True,
+        # torch_dtype=torch.float16,
+        # device_map="auto",
     )
     generation_config = GenerationConfig(
         temperature=0.2,
