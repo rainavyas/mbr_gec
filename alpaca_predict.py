@@ -52,7 +52,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch', action='store_true', help='run as an array job')
     parser.add_argument('--output_dir', type=str, default='experiments', help='Path to the output dir')
     parser.add_argument('--batch_size', type=int, default=10, help='number of items in a batch')
-    parser.add_argument('--batch_ind', type=str, default=0, help='Which batch to run prediction over')
+    parser.add_argument('--batch_ind', type=int, default=0, help='Which batch to run prediction over')
 
     args = parser.parse_args()
 
