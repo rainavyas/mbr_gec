@@ -47,8 +47,13 @@ if __name__ == '__main__':
                         required=True)
     parser.add_argument('--output_file',
                         help='Path to the output file',
-                        required=True)
+                        required=False)
     parser.add_argument('--force_cpu', action='store_true', help='force cpu use')
+    parser.add_argument('--batch', action='store_true', help='run as an array job')
+    parser.add_argument('--output_dir', type=str, default='experiments', help='Path to the output dir')
+    parser.add_argument('--batch_size', type=int, default=10, help='number of items in a batch')
+    parser.add_argument('--batch_ind', type=str, default=0, help='Which batch to run prediction over')
+
     args = parser.parse_args()
 
     # Save the command run
@@ -61,6 +66,12 @@ if __name__ == '__main__':
     with open(args.input_file, 'r') as f:
         lines = f.readlines()
     lines = [l.rstrip('\n') for l in lines]
+
+    if args.batch:
+        start = args.batch_ind*args.batch_size
+        end = start + args.batch_size
+        lines = lines[start:end]
+
     ids = [l.split(' ')[0] for l in lines]
     texts = [' '.join(l.split(' ')[1:]) for l in lines]
 
@@ -71,7 +82,7 @@ if __name__ == '__main__':
         temperature=0.2,
         top_p=0.75,
         top_k=40,
-        num_beams=4,
+        num_beams=2,
         max_new_tokens=128,
     )
 
@@ -109,7 +120,12 @@ if __name__ == '__main__':
         preds.append(idd + ' '+ pred)
     
     # Save to output file
-    with open(args.output_file, 'w') as f:
+    if args.batch:
+        output_file = f'{args.output_dir}/alpaca_predict{args.batch_ind}.pred'
+    else:
+        output_file = args.output_file
+
+    with open(output_file, 'w') as f:
         f.writelines(preds)
 
 
