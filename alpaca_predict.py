@@ -117,7 +117,7 @@ if __name__ == '__main__':
         response = tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
         loc = response.find('Response:')
         pred = response[loc+18:]
-        preds.append(idd + ' '+ pred)
+        preds.append(idd + ' '+ pred+'\n')
     
     # Save to output file
     if args.batch:
