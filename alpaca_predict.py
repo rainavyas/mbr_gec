@@ -68,7 +68,7 @@ if __name__ == '__main__':
     lines = [l.rstrip('\n') for l in lines]
 
     if args.batch:
-        start = args.batch_ind*args.batch_size
+        start = (args.batch_ind-1)*args.batch_size
         end = start + args.batch_size
         lines = lines[start:end]
 
