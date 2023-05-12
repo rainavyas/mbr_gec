@@ -84,6 +84,19 @@ def edit_prec(edits1, edits2):
     intersection = len(list(set(list1).intersection(list2)))
     return float(intersection) / len(list2)
 
+def edit_f05(edits1, edits2):
+    # f05 estimate based reward
+    # edits1: ref 
+    # edits2: hyp
+    k = 0.5
+    list1 = [e.o_str+' -> '+e.c_str for e in edits1]
+    list2 = [e.o_str+' -> '+e.c_str for e in edits2]
+    if len(list1 + list2) == 0:
+        return 1
+    intersection = len(list(set(list1).intersection(list2)))
+    return ((1+(k**2))*intersection)/((k*len(list1)) + len(list2))
+
+
 if __name__ == "__main__":
 
     # Get command line arguments
@@ -91,7 +104,7 @@ if __name__ == "__main__":
     commandLineParser.add_argument('--pred_files', type=str, nargs='+', required=False, help='path to data outputs with predicted sequences')
     commandLineParser.add_argument('--input', type=str, required=True, help='path to input file with source incorrect sequences')
     commandLineParser.add_argument('--outfile', type=str, required=True, help='path to save final predictions')
-    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard', 'rec', 'prec'], help='reward metric to use')
+    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard', 'rec', 'prec', 'f05'], help='reward metric to use')
     commandLineParser.add_argument('--upperbound', action='store_true', help='select sample wrt to ref')
     commandLineParser.add_argument('--ref', type=str, default='', required=False, help='path to ref file if upperbound')
     args = commandLineParser.parse_args()
@@ -137,7 +150,7 @@ if __name__ == "__main__":
 
     
     # reward metric
-    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard, 'rec':edit_rec, 'prec':edit_prec}
+    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard, 'rec':edit_rec, 'prec':edit_prec, 'f05':edit_f05}
     
     # select samples
     selected_sample = []
