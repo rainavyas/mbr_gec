@@ -91,7 +91,7 @@ if __name__ == "__main__":
     commandLineParser.add_argument('--pred_files', type=str, nargs='+', required=False, help='path to data outputs with predicted sequences')
     commandLineParser.add_argument('--input', type=str, required=True, help='path to input file with source incorrect sequences')
     commandLineParser.add_argument('--outfile', type=str, required=True, help='path to save final predictions')
-    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard', 'prec'], help='reward metric to use')
+    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard', 'rec', 'prec'], help='reward metric to use')
     commandLineParser.add_argument('--upperbound', action='store_true', help='select sample wrt to ref')
     commandLineParser.add_argument('--ref', type=str, default='', required=False, help='path to ref file if upperbound')
     args = commandLineParser.parse_args()
