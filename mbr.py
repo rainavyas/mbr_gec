@@ -18,6 +18,7 @@ import errant
 
 annotator = errant.load('en')
 
+
 def return_edits(input, prediction):
     '''
     Get edits
@@ -44,6 +45,7 @@ def edit_agreement(edits1, edits2):
     return matched
 
 def edit_jaccard_similarity(edits1, edits2):
+    # recall estimate based reward
     list1 = [e.o_str+' -> '+e.c_str for e in edits1]
     list2 = [e.o_str+' -> '+e.c_str for e in edits2]
 
@@ -55,6 +57,17 @@ def edit_jaccard_similarity(edits1, edits2):
 
     return float(intersection) / union
 
+def edit_prec_similarity(edits1, edits2):
+    # prec estimate based reward
+    list1 = [e.o_str+' -> '+e.c_str for e in edits1]
+    list2 = [e.o_str+' -> '+e.c_str for e in edits2]
+
+    if len(list1) == 0 and len(list2) == 0:
+        return 1
+
+    intersection = len(list(set(list1).intersection(list2)))
+    return float(intersection) / len(list1)
+
 if __name__ == "__main__":
 
     # Get command line arguments
@@ -62,7 +75,7 @@ if __name__ == "__main__":
     commandLineParser.add_argument('--pred_files', type=str, nargs='+', required=False, help='path to data outputs with predicted sequences')
     commandLineParser.add_argument('--input', type=str, required=True, help='path to input file with source incorrect sequences')
     commandLineParser.add_argument('--outfile', type=str, required=True, help='path to save final predictions')
-    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard'], help='reward metric to use')
+    commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard', 'prec'], help='reward metric to use')
     commandLineParser.add_argument('--upperbound', action='store_true', help='select sample wrt to ref')
     commandLineParser.add_argument('--ref', type=str, default='', required=False, help='path to ref file if upperbound')
     args = commandLineParser.parse_args()
@@ -108,7 +121,7 @@ if __name__ == "__main__":
 
     
     # reward metric
-    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard_similarity}
+    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard_similarity, 'prec':edit_prec_similarity}
     
     # select samples
     selected_sample = []
