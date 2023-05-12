@@ -62,7 +62,7 @@ def edit_prec_similarity(edits1, edits2):
     list1 = [e.o_str+' -> '+e.c_str for e in edits1]
     list2 = [e.o_str+' -> '+e.c_str for e in edits2]
 
-    if len(list1) == 0 and len(list2) == 0:
+    if len(list1) == 0:
         return 1
 
     intersection = len(list(set(list1).intersection(list2)))
