@@ -161,7 +161,7 @@ if __name__ == "__main__":
                 for j in range(len(edits)):
                     if i == j:
                         continue
-                    score = scorer[args.reward](edits[i], edits[j])
+                    score = scorer[args.reward](edits[j], edits[i])
                     total += score
                 if total > best[1]:
                     best = [i, total]
