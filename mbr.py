@@ -44,8 +44,7 @@ def edit_agreement(edits1, edits2):
             matched += 1
     return matched
 
-def edit_jaccard_similarity(edits1, edits2):
-    # recall estimate based reward
+def edit_jaccard(edits1, edits2):
     list1 = [e.o_str+' -> '+e.c_str for e in edits1]
     list2 = [e.o_str+' -> '+e.c_str for e in edits2]
 
@@ -57,8 +56,11 @@ def edit_jaccard_similarity(edits1, edits2):
 
     return float(intersection) / union
 
-def edit_prec_similarity(edits1, edits2):
-    # prec estimate based reward
+def edit_rec(edits1, edits2):
+
+    # rec estimate based reward
+    # edits1: ref 
+    # edits2: hyp
     list1 = [e.o_str+' -> '+e.c_str for e in edits1]
     list2 = [e.o_str+' -> '+e.c_str for e in edits2]
 
@@ -67,6 +69,20 @@ def edit_prec_similarity(edits1, edits2):
 
     intersection = len(list(set(list1).intersection(list2)))
     return float(intersection) / len(list1)
+
+def edit_prec(edits1, edits2):
+
+    # prec estimate based reward
+    # edits1: ref 
+    # edits2: hyp
+    list1 = [e.o_str+' -> '+e.c_str for e in edits1]
+    list2 = [e.o_str+' -> '+e.c_str for e in edits2]
+
+    if len(list2) == 0:
+        return 1
+
+    intersection = len(list(set(list1).intersection(list2)))
+    return float(intersection) / len(list2)
 
 if __name__ == "__main__":
 
@@ -121,7 +137,7 @@ if __name__ == "__main__":
 
     
     # reward metric
-    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard_similarity, 'prec':edit_prec_similarity}
+    scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard, 'rec':edit_rec, 'prec':edit_prec}
     
     # select samples
     selected_sample = []
@@ -131,7 +147,7 @@ if __name__ == "__main__":
             corr_edits = return_edits(incs[n], corrs[n])
             best = [None, -1] # [model index, score] 
             for i in range(len(edits)):
-                total = scorer[args.reward](edits[i], corr_edits)
+                total = scorer[args.reward](corr_edits, edits[i])
                 if total > best[1]:
                     best = [i, total]
             selected_sample.append(samples[best[0]])
@@ -145,7 +161,7 @@ if __name__ == "__main__":
                 for j in range(len(edits)):
                     if i == j:
                         continue
-                    score = scorer[args.reward](edits[j], edits[i])
+                    score = scorer[args.reward](edits[i], edits[j])
                     total += score
                 if total > best[1]:
                     best = [i, total]
