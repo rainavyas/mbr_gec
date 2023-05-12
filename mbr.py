@@ -16,13 +16,12 @@ import argparse
 from tqdm import tqdm
 import errant
 
-
+annotator = errant.load('en')
 
 def return_edits(input, prediction):
     '''
     Get edits
     '''
-    annotator = errant.load('en')
     input = annotator.parse(input)
     prediction = annotator.parse(prediction)
     alignment = annotator.align(input, prediction)
