@@ -89,7 +89,7 @@ if __name__ == "__main__":
     if args.upperbound:
         # load ref file and align with other files
         with open(args.ref, 'r') as f:
-            lines = f.readlines
+            lines = f.readlines()
         lines = [s.strip('\n') for s in lines]
 
         id_to_seq = []
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 if total > best[1]:
                     best = [i, total]
             selected_sample.append(samples[best[0]])
-            
+
     else:
         for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
             edits = [return_edits(incs[n], s) for s in samples]
