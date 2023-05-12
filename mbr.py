@@ -92,7 +92,7 @@ if __name__ == "__main__":
             lines = f.readlines()
         lines = [s.strip('\n') for s in lines]
 
-        id_to_seq = []
+        id_to_seq = {}
         for l in lines:
             idd = l.split(' ')[0]
             seq = ' '.join(l.split(' ')[1:])
