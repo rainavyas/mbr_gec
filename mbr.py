@@ -63,6 +63,8 @@ if __name__ == "__main__":
     commandLineParser.add_argument('--input', type=str, required=True, help='path to input file with source incorrect sequences')
     commandLineParser.add_argument('--outfile', type=str, required=True, help='path to save final predictions')
     commandLineParser.add_argument('--reward', type=str, default='agreement', choices=['agreement', 'jaccard'], help='reward metric to use')
+    commandLineParser.add_argument('--upperbound', action='store_true', help='select sample wrt to ref')
+    commandLineParser.add_argument('--ref', type=str, default='', required=False, help='path to ref file if upperbound')
     args = commandLineParser.parse_args()
 
     # Save the command run
@@ -84,24 +86,57 @@ if __name__ == "__main__":
     with open(args.input, 'r') as f:
         incs = f.readlines()
     
+    if args.upperbound:
+        # load ref file and align with other files
+        with open(args.ref, 'r') as f:
+            lines = f.readlines
+        lines = [s.strip('\n') for s in lines]
+
+        id_to_seq = []
+        for l in lines:
+            idd = l.split(' ')[0]
+            seq = ' '.join(l.split(' ')[1:])
+            id_to_seq[idd] = seq
+        
+        corrs = []
+        for l in incs:
+            idd = l.split(' ')[0]
+            try:
+                corrs.append(id_to_seq[idd])
+            except:
+                corrs.append('no match')
+
+    
     # reward metric
     scorer = {'agreement':edit_agreement, 'jaccard':edit_jaccard_similarity}
     
     # select samples
     selected_sample = []
-    for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
-        edits = [return_edits(incs[n], s) for s in samples]
-        best = [None, -1] # [model index, score] 
-        for i in range(len(edits)):
-            total = 0
-            for j in range(len(edits)):
-                if i == j:
-                    continue
-                score = scorer[args.reward](edits[j], edits[i])
-                total += score
-            if total > best[1]:
-                best = [i, total]
-        selected_sample.append(samples[best[0]])
+    if args.upperbound:
+        for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
+            edits = [return_edits(incs[n], s) for s in samples]
+            corr_edits = return_edits(incs[n], corrs[n])
+            best = [None, -1] # [model index, score] 
+            for i in range(len(edits)):
+                total = scorer[args.reward](edits[i], corr_edits)
+                if total > best[1]:
+                    best = [i, total]
+            selected_sample.append(samples[best[0]])
+            
+    else:
+        for n, samples in tqdm(enumerate(zip(*data)), total=len(incs)):
+            edits = [return_edits(incs[n], s) for s in samples]
+            best = [None, -1] # [model index, score] 
+            for i in range(len(edits)):
+                total = 0
+                for j in range(len(edits)):
+                    if i == j:
+                        continue
+                    score = scorer[args.reward](edits[j], edits[i])
+                    total += score
+                if total > best[1]:
+                    best = [i, total]
+            selected_sample.append(samples[best[0]])
     
     # save selected samples
     with open(args.outfile, 'w') as f:
