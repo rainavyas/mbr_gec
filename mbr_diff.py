@@ -141,7 +141,7 @@ if __name__ == "__main__":
     # select samples
     selected_sample = []
 
-    for n, sel_samples, uni_samples in tqdm(enumerate(zip(zip(*sel_data), zip(*uni_data))), total=len(incs)):
+    for n, (sel_samples, uni_samples) in tqdm(enumerate(zip(zip(*sel_data), zip(*uni_data))), total=len(incs)):
         sel_edits = [return_edits(incs[n], s) for s in sel_samples]
         uni_edits = [return_edits(incs[n], s) for s in uni_samples]
         best = [None, -1] # [model index, score] 
