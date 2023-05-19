@@ -185,7 +185,7 @@ if __name__ == "__main__":
         
         # convert difflib edits to output sequence
         out_seq = difflib_edits_to_output(curr, incs[n])
-        selected_sample.append(out_seq)
+        selected_sample.append(out_seq.rstrip('\n'))
 
     
     # save selected samples
