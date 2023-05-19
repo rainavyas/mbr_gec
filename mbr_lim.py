@@ -60,6 +60,7 @@ def difflib_edits_to_output(difflib_edits, source):
                 previous_end = action[1]
 
         final_text += "".join(source_tokens[previous_end:])
+        return final_text
     else:
         return input
 
