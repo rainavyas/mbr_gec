@@ -94,7 +94,8 @@ def edit_f05(edits1, edits2):
     if len(list1 + list2) == 0:
         return 1
     intersection = len(list(set(list1).intersection(list2)))
-    return ((1+(k**2))*intersection)/((k*len(list1)) + len(list2))
+    # return ((1+(k**2))*intersection)/((k*len(list1)) + len(list2)) # original code implemented incorrectly: thanks to Takumi Goto for spotting this
+    return ((1+(k**2))*intersection)/(((k**2)*len(list1)) + len(list2))
 
 
 if __name__ == "__main__":
